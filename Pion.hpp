@@ -11,9 +11,7 @@ public:
   Pion(int x, int y, int owner);
   
   const int getX() const;
-  
   const int getY() const;
-
   const int getOwner() const;
 
 };

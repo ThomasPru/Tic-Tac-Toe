@@ -9,10 +9,10 @@
 using namespace std;
 
 class Plateau{
-protected:
-  Pion plateau[3][3];
+private:
+  Pion grille[3][3];
   int _player;
-
+  bool _isFull;
 public:
   Plateau();
   
@@ -22,6 +22,8 @@ public:
   int getActualPlayer() const;
 
   void display() const;
+
+  bool checkBoardFull();
   bool checkLegalMove(int x, int y) const;
   bool checkVictory() const;
   bool checkLine(int i) const;

@@ -2,15 +2,28 @@
 
 Plateau::Plateau(){
   _player = 2;
+  _isFull = false;
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      plateau[i][j] = Pion(i,j,0);
+      grille[i][j] = Pion(i,j,0);
     }
   }
 }
-  
+
+bool Plateau::checkBoardFull(){
+  _isFull = true;
+  for(int i = 0; i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      if(grille[i][j].getOwner() == 0){
+	_isFull = false;
+      }
+    }
+  }
+  return _isFull;
+}
+
 void Plateau::poserPion(Pion p){
-  plateau[p.getX()][p.getY()] = p;
+  grille[p.getX()][p.getY()] = p;
 }
 
 int Plateau::getActualPlayer() const{
@@ -27,40 +40,33 @@ void Plateau::switchPlayer(){
 }
 
 bool Plateau::checkLegalMove(int x, int y) const{
-  if(x > 3 || x < 1 || y > 3 || y < 1){
-    return false;
-  }
-  else{
-    if(plateau[x-1][y-1].getOwner() != 0){
-      return false;
-    }
-  }
-  return true;
+  return !(grille[x-1][y-1].getOwner() != 0 ||
+	   x > 3 || x < 1 || y > 3 || y < 1);
 }
 
 void Plateau::display() const{
-  for(unsigned int x = 0; x < 4; x++){
+  for(int x = 0; x < 4; x++){
     cout << "-------------------------------------------------" << endl;
   }
   cout << "-----------ETAT DU PLATEAU-----------" << endl;
-  for(unsigned int x = 0; x < 2; x++){
+  for(int x = 0; x < 2; x++){
     cout << "-----------------------------------------" << endl;
   }
-  for(unsigned int i = 0;i < 3; i++){
-    for(unsigned int j = 0; j < 3; j++){
-      switch (plateau[i][j].getOwner()){
+  for(int i = 0;i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      switch (grille[i][j].getOwner()){
       case 1 :
-	cout << "X ";
+	cout << "X   ";
 	break;
       case 2 :
-	cout << "O ";
+	cout << "O   ";
 	break;
       default:
-	cout << ". ";
+	cout << ".   ";
 	break;
       }
     }
-    cout << endl;
+    cout << endl << endl;
   }
 }
 
@@ -76,26 +82,26 @@ bool Plateau::checkVictory() const{
 }
 
 bool Plateau::checkLine(int i) const{
-  return plateau[i][0].getOwner() == plateau[i][1].getOwner()
-    && plateau[i][0].getOwner() == plateau[i][2].getOwner()
-    && plateau[i][0].getOwner() != 0;
+  return grille[i][0].getOwner() == grille[i][1].getOwner()
+    && grille[i][0].getOwner() == grille[i][2].getOwner()
+    && grille[i][0].getOwner() != 0;
 }
 
 bool Plateau::checkColumn(int i) const{
-  return plateau[0][i].getOwner() == plateau[1][i].getOwner()
-    && plateau[0][i].getOwner() == plateau[2][i].getOwner()
-    && plateau[0][i].getOwner() != 0;
+  return grille[0][i].getOwner() == grille[1][i].getOwner()
+    && grille[0][i].getOwner() == grille[2][i].getOwner()
+    && grille[0][i].getOwner() != 0;
 }
 
 bool Plateau::checkDiagonal() const{
-  if(plateau[0][0].getOwner() == plateau[1][1].getOwner()
-     && plateau[0][0].getOwner() == plateau[2][2].getOwner()
-     && plateau[1][1].getOwner() != 0){
+  if(grille[0][0].getOwner() == grille[1][1].getOwner()
+     && grille[0][0].getOwner() == grille[2][2].getOwner()
+     && grille[1][1].getOwner() != 0){
     return true;
   }
-  if(plateau[0][2].getOwner() == plateau[1][1].getOwner()
-     && plateau[0][2].getOwner() == plateau[2][0].getOwner()
-     && plateau[1][1].getOwner() != 0){
+  if(grille[0][2].getOwner() == grille[1][1].getOwner()
+     && grille[0][2].getOwner() == grille[2][0].getOwner()
+     && grille[1][1].getOwner() != 0){
     return true;
   }
   return false;
