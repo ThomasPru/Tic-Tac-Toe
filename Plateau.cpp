@@ -1,7 +1,8 @@
 #include "Plateau.hpp"
 
 Plateau::Plateau(){
-  _player = 2;
+  _player = rand()%2 + 1;
+  cout << "------------JOUEUR " << _player%2 +1 << " COMMENCE ! " << endl;
   _isFull = false;
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
@@ -70,6 +71,8 @@ void Plateau::display() const{
   }
 }
 
+
+
 bool Plateau::checkVictory() const{
   for(unsigned int i = 0; i < 3; i++){
     if (checkLine(i) || checkColumn(i))
@@ -105,4 +108,34 @@ bool Plateau::checkDiagonal() const{
     return true;
   }
   return false;
+}
+
+vector<vector<int> > Plateau::getCoupPossible(){
+  vector<vector<int> > CoupPossible;
+
+  int size = 0;
+  for(int i = 0; i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      if (grille[i][j].getOwner() == 0){
+	size++;
+      }
+    }
+  }
+  
+  CoupPossible.resize(size);
+  for(int i = 0; i < size; i++){
+    CoupPossible[i].resize(2);
+  }
+  
+  int inc = 0;
+  for(int i = 0; i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      if (grille[i][j].getOwner() == 0){
+	CoupPossible[inc][0] = i;
+	CoupPossible[inc][1] = j;
+	inc++;
+      }
+    }
+  }
+  return CoupPossible;
 }

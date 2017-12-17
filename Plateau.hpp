@@ -5,11 +5,12 @@
 #include <vector>
 #include <stdlib.h>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
 class Plateau{
-private:
+protected:
   Pion grille[3][3];
   int _player;
   bool _isFull;
@@ -29,6 +30,8 @@ public:
   bool checkLine(int i) const;
   bool checkColumn(int i) const;
   bool checkDiagonal() const;
+
+  vector<vector<int> > getCoupPossible();
 };
 
 #endif

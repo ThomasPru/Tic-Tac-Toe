@@ -13,6 +13,14 @@ Execution
 --------------------------------------
 --------------------------------------
 --------------------------------------
+Done :
+
+Basic game
+Human VS Human
+Human VS Ia (random)
+
+
+
 Next evolutions :
 -- add score
 
@@ -20,6 +28,6 @@ Next evolutions :
 
 -- graphic interface
 
--- IA player
+-- IA player (alpha-beta)
 
 -- Network

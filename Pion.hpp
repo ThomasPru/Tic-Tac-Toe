@@ -2,7 +2,7 @@
 #define PION_HPP_
 
 class Pion{
-private:
+protected:
   int _x;
   int _y;
   int _owner;
