@@ -1,11 +1,10 @@
 #include <iostream>
-//#include "Humain.hpp"
-//#include "Ia.hpp"
 #include "Joueur.hpp"
 
 using namespace std;
 
 int main(int agrc, char** argv){
+  
   srand (time(NULL));
   
   for(unsigned int i = 0; i < 5; i++){
@@ -37,7 +36,15 @@ int main(int agrc, char** argv){
     _players.push_back(new Joueur(J2name, 2));
   }
   else{
-    _players.push_back(new Joueur(2, 1));
+    int pow;
+    cout << "Quel est le niveau de votre adversaire ?" << endl;
+    cout << "FACILE (1) --- NORMAL (2)" << endl;
+    cin >> pow;
+    while(pow != 1 && pow != 2){
+      cout << "Veuillez saisir 1 ou 2 : ";
+      cin >> pow;
+    }
+    _players.push_back(new Joueur(2, pow));
   }
   //-----Fin initialisation joueurs
 
@@ -55,36 +62,31 @@ int main(int agrc, char** argv){
   cout << "     ----------------LANCEMENT DU JEU----------------"<<endl;
   Plateau p;
 
-  
   //On rentre dans le jeu
   int xposition;
   int yposition;
 
-  bool gameRun = true;
+  int gameRun = 0;
   
-  while (gameRun) {
+  while (gameRun == 0) {
     p.switchPlayer();
     p.display();
-
-    p.getCoupPossible();
     
     p.poserPion( _players[p.getActualPlayer()-1]-> CreerCoup(p) );
 
-    gameRun = !p.checkVictory();
-    if(gameRun == true){
-      gameRun = !p.checkBoardFull();
+    gameRun = p.checkVictory();
+    if(gameRun == 0){
+      gameRun = p.checkBoardFull();
     }
   }
 
-  
-  
   p.display();
-  if(p.checkBoardFull() && !p.checkVictory()){
+  if(p.checkBoardFull() == 1 && p.checkVictory() == 0){
     cout << "Egalite !" << endl;
   }
   else{
-    cout << "Le gagnant est le joueur " << p.getActualPlayer() << " : "
-	 << _players[p.getActualPlayer()-1] -> getName() <<endl;
+    cout << "Le gagnant est le joueur " << p.checkVictory() << " : "
+	 << _players[p.checkVictory()-1] -> getName() <<endl;
   }
   return 0;
 }

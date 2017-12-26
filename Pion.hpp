@@ -13,7 +13,7 @@ public:
   const int getX() const;
   const int getY() const;
   const int getOwner() const;
-
+  int setOwner(int newOwner);
 };
 
 #endif

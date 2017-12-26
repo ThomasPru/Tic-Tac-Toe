@@ -16,8 +16,9 @@ Execution
 Done :
 
 Basic game
-Human VS Human
-Human VS Ia (random)
+Human VS Human,
+Human VS "Ia" (random),
+Human VS  Ia  (min-max),
 
 
 
@@ -30,4 +31,4 @@ Next evolutions :
 
 -- IA player (alpha-beta)
 
--- Network
+-- Net-Play

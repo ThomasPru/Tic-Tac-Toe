@@ -10,14 +10,15 @@
 using namespace std;
 
 class Plateau{
-protected:
-  Pion grille[3][3];
+public:
+  int grille[3][3];
   int _player;
-  bool _isFull;
+  int _pastTrapIA;
 public:
   Plateau();
   
   void poserPion(Pion p);
+  void retirerPion(Pion p);
 
   void switchPlayer();
   int getActualPlayer() const;
@@ -26,12 +27,18 @@ public:
 
   bool checkBoardFull();
   bool checkLegalMove(int x, int y) const;
-  bool checkVictory() const;
-  bool checkLine(int i) const;
-  bool checkColumn(int i) const;
-  bool checkDiagonal() const;
+  int checkVictory() const;
+  int checkLine(int i) const;
+  int checkColumn(int i) const;
+  int checkDiagonal() const;
 
-  vector<vector<int> > getCoupPossible();
+  vector<Pion > getCoupPossible();
+
+ 
+  int countLine(int player, int i);
+  int countColonne(int player, int i);
+  int countDiagoDesc(int player);
+  int countDiagoAsc(int player);
+  bool verifTrap();
 };
-
 #endif

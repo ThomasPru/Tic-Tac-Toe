@@ -2,29 +2,44 @@
 
 Plateau::Plateau(){
   _player = rand()%2 + 1;
+  _pastTrapIA = false;
   cout << "------------JOUEUR " << _player%2 +1 << " COMMENCE ! " << endl;
-  _isFull = false;
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      grille[i][j] = Pion(i,j,0);
+      grille[i][j] = 0;
     }
   }
 }
 
 bool Plateau::checkBoardFull(){
-  _isFull = true;
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      if(grille[i][j].getOwner() == 0){
-	_isFull = false;
+      if(grille[i][j] == 0){
+	return false;
       }
     }
   }
-  return _isFull;
+  return true;
 }
 
 void Plateau::poserPion(Pion p){
-  grille[p.getX()][p.getY()] = p;
+  grille[p.getX()][p.getY()] = p.getOwner();
+  if(getCoupPossible().size() <= 4){
+    _pastTrapIA = true;
+  }
+  else{
+    _pastTrapIA = false;
+  }
+}
+
+void Plateau::retirerPion(Pion p){
+  grille[p.getX()][p.getY()] = 0;
+  if(getCoupPossible().size() <= 4){
+    _pastTrapIA = true;
+  }
+  else{
+    _pastTrapIA = false;
+  }
 }
 
 int Plateau::getActualPlayer() const{
@@ -41,7 +56,7 @@ void Plateau::switchPlayer(){
 }
 
 bool Plateau::checkLegalMove(int x, int y) const{
-  return !(grille[x-1][y-1].getOwner() != 0 ||
+  return !(grille[x-1][y-1] != 0 ||
 	   x > 3 || x < 1 || y > 3 || y < 1);
 }
 
@@ -55,7 +70,7 @@ void Plateau::display() const{
   }
   for(int i = 0;i < 3; i++){
     for(int j = 0; j < 3; j++){
-      switch (grille[i][j].getOwner()){
+      switch (grille[i][j]){
       case 1 :
 	cout << "X   ";
 	break;
@@ -73,69 +88,106 @@ void Plateau::display() const{
 
 
 
-bool Plateau::checkVictory() const{
+int Plateau::checkVictory() const{
+  int gagnant = 0;
   for(unsigned int i = 0; i < 3; i++){
-    if (checkLine(i) || checkColumn(i))
-      return true;
+    if(gagnant == 0){
+      gagnant = checkLine(i);
+    }
+    if(gagnant == 0){
+      gagnant = checkColumn(i);
+    }
   }
-  if(checkDiagonal()){
-    return true;
+  if(gagnant == 0){
+    gagnant = checkDiagonal();
   }
-  return false;
+  return gagnant;
 }
 
-bool Plateau::checkLine(int i) const{
-  return grille[i][0].getOwner() == grille[i][1].getOwner()
-    && grille[i][0].getOwner() == grille[i][2].getOwner()
-    && grille[i][0].getOwner() != 0;
-}
-
-bool Plateau::checkColumn(int i) const{
-  return grille[0][i].getOwner() == grille[1][i].getOwner()
-    && grille[0][i].getOwner() == grille[2][i].getOwner()
-    && grille[0][i].getOwner() != 0;
-}
-
-bool Plateau::checkDiagonal() const{
-  if(grille[0][0].getOwner() == grille[1][1].getOwner()
-     && grille[0][0].getOwner() == grille[2][2].getOwner()
-     && grille[1][1].getOwner() != 0){
-    return true;
+int Plateau::checkLine(int i) const{
+  if( grille[i][0] == grille[i][1]
+    && grille[i][0] == grille[i][2]){
+    return grille[i][0];
   }
-  if(grille[0][2].getOwner() == grille[1][1].getOwner()
-     && grille[0][2].getOwner() == grille[2][0].getOwner()
-     && grille[1][1].getOwner() != 0){
-    return true;
-  }
-  return false;
+  return 0;
 }
 
-vector<vector<int> > Plateau::getCoupPossible(){
-  vector<vector<int> > CoupPossible;
+int Plateau::checkColumn(int i) const{
+  if( grille[0][i] == grille[1][i]
+      && grille[0][i] == grille[2][i]){
+    return grille[0][i];
+  }
+  return 0;
+}
 
-  int size = 0;
+int Plateau::checkDiagonal() const{
+  if(grille[0][0] == grille[1][1]
+     && grille[0][0] == grille[2][2]
+     && grille[1][1] != 0){
+    return grille[1][1];
+  }
+  if(grille[0][2] == grille[1][1]
+     && grille[0][2] == grille[2][0]
+     && grille[1][1] != 0){
+    return grille[1][1];
+  }
+  return 0;
+}
+
+vector<Pion> Plateau::getCoupPossible(){
+  vector<Pion> CoupPossible;
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      if (grille[i][j].getOwner() == 0){
-	size++;
+      if(grille[i][j] == 0){
+	Pion pi(i,j,getActualPlayer());
+	CoupPossible.push_back(pi);
       }
     }
   }
-  
-  CoupPossible.resize(size);
-  for(int i = 0; i < size; i++){
-    CoupPossible[i].resize(2);
-  }
-  
-  int inc = 0;
+  return CoupPossible;  
+}
+
+
+int Plateau::countDiagoAsc(int player){
+  int count = 0;
   for(int i = 0; i < 3; i++){
-    for(int j = 0; j < 3; j++){
-      if (grille[i][j].getOwner() == 0){
-	CoupPossible[inc][0] = i;
-	CoupPossible[inc][1] = j;
-	inc++;
-      }
+    if (grille[i][2-i] == player)
+      count++;
+  }
+  return count;
+}
+
+int Plateau::countDiagoDesc(int player){
+  int count = 0;
+  for(int i = 0; i < 3; i++){
+    if(grille[i][i] == player)
+      count++;
+  }
+  return count;
+}
+
+int Plateau::countColonne(int player, int i){
+  int count = 0;
+  for(int j = 0; j < 3; j++){
+    if(grille[j][i] == player){
+      count++;
     }
   }
-  return CoupPossible;
+  return count;
+}
+
+int Plateau::countLine(int player, int i){
+  int count = 0;
+  for(int j = 0; j < 3; j++){
+    if(grille[i][j] == player)
+      count++;
+  }
+  return count;
+}
+
+bool Plateau::verifTrap(){
+  if((countDiagoDesc(1) == 2 || countDiagoAsc(1) == 2) && grille[1][1] == 2){
+    return true;
+  }
+  return false;
 }

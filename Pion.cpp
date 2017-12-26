@@ -20,3 +20,7 @@ const int Pion::getY() const{
 const int Pion::getOwner() const{
   return _owner;
 }
+
+int Pion::setOwner(int newOwner){
+  _owner = newOwner;
+}
